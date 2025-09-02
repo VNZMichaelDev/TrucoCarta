@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SERVER_URL=http://backend:3001
+    depends_on:
+      - backend
+    networks:
+      - truco-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - FRONTEND_URL=http://frontend:3000
+    networks:
+      - truco-network
+
+networks:
+  truco-network:
+    driver: bridge
+
+volumes:
+  node_modules_frontend:
+  node_modules_backend:
